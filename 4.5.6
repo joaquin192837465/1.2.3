@@ -1,0 +1,148 @@
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
+
+const catEyeStyle = {
+  fontSize: "6rem",
+  fontWeight: "900",
+  fontFamily: "'Arial Black', Gadget, sans-serif",
+  color: "limegreen",
+  textShadow:
+    "0 0 5px #32CD32, 0 0 10px #32CD32, 0 0 20px #32CD32, 0 0 40px #32CD32",
+  userSelect: "none",
+  textAlign: "center",
+  marginTop: "2rem",
+  letterSpacing: "0.2em",
+};
+
+const containerStyle = {
+  maxWidth: "600px",
+  margin: "40px auto",
+  padding: "0 1rem",
+  textAlign: "center",
+};
+
+const navStyle = {
+  position: "fixed",
+  top: "10px",
+  right: "10px",
+  display: "flex",
+  gap: "10px",
+};
+
+const buttonStyle = {
+  backgroundColor: "#32CD32",
+  border: "none",
+  padding: "10px 20px",
+  color: "white",
+  fontWeight: "bold",
+  fontSize: "1rem",
+  borderRadius: "5px",
+  cursor: "pointer",
+  userSelect: "none",
+  textDecoration: "none",
+};
+
+const searchInputStyle = {
+  width: "100%",
+  padding: "10px",
+  fontSize: "1.2rem",
+  borderRadius: "8px",
+  border: "2px solid #32CD32",
+  marginTop: "20px",
+  outline: "none",
+};
+
+function Home() {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+    // Compose the target URL
+    // URL: https://108.181.11.39/?ko=s&__cpo=aHR0cHM6Ly9zdGFydC5kdWNrZHVja2dvLmNvbQ&q=query
+    // Assuming query param should be added as &q= or similar? 
+    // The original URL has fixed parameters, so we append &q= or &search= as needed.
+    // Since no explicit parameter for search term was given, let's append &q=<query>
+    const baseUrl = "https://108.181.11.39/?ko=s&__cpo=aHR0cHM6Ly9zdGFydC5kdWNrZHVja2dvLmNvbQ";
+    const searchUrl = `${baseUrl}&q=${encodeURIComponent(query)}`;
+    window.open(searchUrl, "_blank");
+  };
+
+  return (
+    <div style={containerStyle}>
+      <h1 style={catEyeStyle}>THE EYE</h1>
+      <form onSubmit={handleSearch}>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={searchInputStyle}
+          aria-label="Search"
+        />
+      </form>
+    </div>
+  );
+}
+
+function Games() {
+  const gamesList = [
+    { name: "Game 1", url: "https://example.com/game1" },
+    { name: "Game 2", url: "https://example.com/game2" },
+    { name: "Game 3", url: "https://example.com/game3" },
+    { name: "Game 4", url: "https://example.com/game4" },
+    { name: "Game 5", url: "https://example.com/game5" },
+  ];
+
+  return (
+    <div style={containerStyle}>
+      <h2 style={{ fontSize: "3rem", marginBottom: "2rem", color: "#32CD32", textAlign: "center" }}>
+        GAMES
+      </h2>
+      <div style={{ display: "flex", flexDirection: "column", gap: "15px", maxWidth: "300px", margin: "0 auto" }}>
+        {gamesList.map((game, i) => (
+          <a
+            key={i}
+            href={game.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              ...buttonStyle,
+              textAlign: "center",
+              display: "block",
+              userSelect: "none",
+            }}
+          >
+            {game.name}
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Navbar() {
+  return (
+    <nav style={navStyle}>
+      <Link to="/" style={buttonStyle} aria-label="Home">
+        HOME
+      </Link>
+      <Link to="/games" style={buttonStyle} aria-label="Games">
+        GAMES
+      </Link>
+    </nav>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/games" element={<Games />} />
+      </Routes>
+    </Router>
+  );
+}
